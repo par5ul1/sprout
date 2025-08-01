@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import { NuqsAdapter } from "nuqs/adapters/react";
 import { App } from "./app.tsx";
 import { ThemeProvider } from "./lib/theme-provider";
 
@@ -9,7 +10,9 @@ if (!container) {
 }
 const root = createRoot(container);
 root.render(
-  <ThemeProvider defaultTheme="system" storageKey="sprout-ui-theme">
-    <App />
-  </ThemeProvider>
+  <NuqsAdapter>
+    <ThemeProvider defaultTheme="system" storageKey="sprout-ui-theme">
+      <App />
+    </ThemeProvider>
+  </NuqsAdapter>
 );

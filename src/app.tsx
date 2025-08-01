@@ -1,29 +1,20 @@
-import { useState } from "react";
 import { FilterChips } from "./components/filter-chips";
 import { IssuesGrid } from "./components/issues-grid";
 import Logo from "./components/logo";
 import { Pagination } from "./components/pagination";
 import { ThemeToggle } from "./components/theme-toggle";
 import { useGitHubIssues } from "./hooks/use-github-issues";
-import type { SearchFilters } from "./types/github";
+import { useSearchFilters } from "./hooks/use-search-filters";
 
 export function App() {
-  const [filters, setFilters] = useState<SearchFilters>({
-    languages: ["JavaScript", "TypeScript"],
-    dateRange: {
-      from: null,
-      to: null,
-    },
-    page: 1,
-    perPage: 30,
-  });
+  const { filters, updateFilters } = useSearchFilters();
 
   const { issues, isLoading, error, totalCount } = useGitHubIssues(filters);
 
   const totalPages = Math.ceil(totalCount / (filters.perPage || 30));
 
   const handlePageChange = (page: number) => {
-    setFilters((prev) => ({ ...prev, page }));
+    updateFilters({ page });
   };
 
   return (
@@ -53,7 +44,7 @@ export function App() {
                 </span>
               )}
             </div>
-            <FilterChips filters={filters} onFiltersChange={setFilters} />
+            <FilterChips filters={filters} updateFilters={updateFilters} />
           </div>
 
           {/* Error Message */}

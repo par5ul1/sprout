@@ -61,7 +61,7 @@ export class SessionCache {
 
   private saveToSessionStorage(): void {
     try {
-      const cacheObject: Record<string, CacheEntry<any>> = {};
+      const cacheObject: Record<string, CacheEntry<unknown>> = {};
       this.cache.forEach((value, key) => {
         cacheObject[key] = value;
       });

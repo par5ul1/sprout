@@ -36,7 +36,7 @@ import type { SearchFilters } from "@/types/github";
 
 interface FilterChipsProps {
   filters: SearchFilters;
-  onFiltersChange: (filters: SearchFilters) => void;
+  updateFilters: (filters: Partial<SearchFilters>) => void;
 }
 
 const PRESET_LANGUAGES = [
@@ -75,7 +75,7 @@ const SORT_OPTIONS = [
   },
 ] as const;
 
-export function FilterChips({ filters, onFiltersChange }: FilterChipsProps) {
+export function FilterChips({ filters, updateFilters }: FilterChipsProps) {
   const [languagesOpen, setLanguagesOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
   const [fromCalendarOpen, setFromCalendarOpen] = useState(false);
@@ -101,8 +101,7 @@ export function FilterChips({ filters, onFiltersChange }: FilterChipsProps) {
 
   const addLanguage = (language: string) => {
     if (language.trim() && !filters.languages.includes(language.trim())) {
-      onFiltersChange({
-        ...filters,
+      updateFilters({
         languages: [...filters.languages, language.trim()],
         page: 1,
       });
@@ -111,8 +110,7 @@ export function FilterChips({ filters, onFiltersChange }: FilterChipsProps) {
   };
 
   const removeLanguage = (language: string) => {
-    onFiltersChange({
-      ...filters,
+    updateFilters({
       languages: filters.languages.filter((l) => l !== language),
       page: 1,
     });
@@ -121,8 +119,7 @@ export function FilterChips({ filters, onFiltersChange }: FilterChipsProps) {
   const handleSortChange = (value: string) => {
     const sortOption = SORT_OPTIONS.find((opt) => opt.value === value);
     if (!sortOption) return;
-    onFiltersChange({
-      ...filters,
+    updateFilters({
       sortBy: sortOption.sortBy,
       sortOrder: sortOption.sortOrder,
       page: 1,
@@ -130,8 +127,7 @@ export function FilterChips({ filters, onFiltersChange }: FilterChipsProps) {
   };
 
   const handleDateSelect = (date: Date | undefined, type: "from" | "to") => {
-    onFiltersChange({
-      ...filters,
+    updateFilters({
       dateRange: {
         ...filters.dateRange,
         [type]: date || null,
@@ -186,8 +182,7 @@ export function FilterChips({ filters, onFiltersChange }: FilterChipsProps) {
   };
 
   const clearDateRange = () => {
-    onFiltersChange({
-      ...filters,
+    updateFilters({
       dateRange: { from: null, to: null },
       page: 1,
     });
@@ -198,8 +193,7 @@ export function FilterChips({ filters, onFiltersChange }: FilterChipsProps) {
   };
 
   const clearIndividualDate = (type: "from" | "to") => {
-    onFiltersChange({
-      ...filters,
+    updateFilters({
       dateRange: {
         ...filters.dateRange,
         [type]: null,
@@ -216,8 +210,7 @@ export function FilterChips({ filters, onFiltersChange }: FilterChipsProps) {
   };
 
   const setDateRangePreset = (from: Date, to: Date) => {
-    onFiltersChange({
-      ...filters,
+    updateFilters({
       dateRange: { from, to },
       page: 1,
     });

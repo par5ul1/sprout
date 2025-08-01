@@ -31,8 +31,7 @@ export function useGitHubIssues(filters: SearchFilters) {
         // Build search query
         let query = 'is:issue is:open label:"good first issue"';
 
-        // Add language filters
-        if (filters.languages.length > 0) {
+        if (filters.languages && filters.languages.length > 0) {
           const languageQuery = filters.languages
             .map((lang) => `language:"${lang}"`)
             .join(" OR ");
@@ -98,13 +97,7 @@ export function useGitHubIssues(filters: SearchFilters) {
       }
     };
 
-    // Only fetch if we have at least one language filter
-    if (filters.languages.length > 0) {
-      fetchIssues();
-    } else {
-      setIssues([]);
-      setTotalCount(0);
-    }
+    fetchIssues();
   }, [filters]);
 
   return { issues, isLoading, error, totalCount };
