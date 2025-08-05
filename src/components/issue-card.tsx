@@ -39,14 +39,20 @@ export function IssueCard({ issue }: IssueCardProps) {
     >
       <Card className="h-full w-full transition-colors duration-300 ease-in-out hover:bg-muted/50">
         <CardHeader className="pb-3">
-          <CardTitle className="truncate text-xl leading-tight">
+          <CardTitle
+            className="truncate text-xl leading-tight"
+            title={issue.title}
+          >
             {issue.title}
           </CardTitle>
           <div className="flex flex-col gap-4 text-muted-foreground text-sm">
-            <div className="flex items-center gap-4">
+            <div className="grid grid-cols-2 items-center gap-4">
               <div className="flex items-center gap-1">
                 <GitBranchIcon className="h-4 w-4" />
-                <span className="text-sm">
+                <span
+                  className="text-sm truncate"
+                  title={getRepositoryName(issue.repository_url)}
+                >
                   {getRepositoryName(issue.repository_url)}
                 </span>
               </div>
@@ -58,7 +64,7 @@ export function IssueCard({ issue }: IssueCardProps) {
               )}
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-1">
                 <CalendarIcon className="h-4 w-4" />
                 <span>{formatDate(issue.created_at)}</span>
