@@ -4,6 +4,8 @@ A GitHub issue discovery tool that helps you find open source issues to contribu
 
 ![Sprout_Light_Screenshot](./src/public/screenshots/light.png)
 
+Live Website: [https://par5ul1.github.io/sprout/](https://par5ul1.github.io/sprout/)
+
 ## Features
 
 - 🔍 Search GitHub issues by programming language
