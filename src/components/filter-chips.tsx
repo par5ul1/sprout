@@ -354,8 +354,8 @@ export function FilterChips({ filters, updateFilters }: FilterChipsProps) {
             {getDateChipText()}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
-          <div className="space-y-4 p-4">
+        <PopoverContent className="w-auto max-w-[90vw] p-0" align="end">
+          <div className="space-y-4 p-4 w-full">
             <div className="flex items-center justify-between">
               <h4 className="font-medium text-sm">Date Range</h4>
               <Button
@@ -369,113 +369,115 @@ export function FilterChips({ filters, updateFilters }: FilterChipsProps) {
             </div>
 
             {/* Date inputs with shortcuts */}
-            <div className="grid grid-cols-[auto_1fr] gap-4">
+            <div className="grid sm:grid-cols-[auto_1fr] gap-4">
               {/* Date range shortcuts */}
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 w-full min-w-0">
                 <span className="text-muted-foreground text-xs">Presets</span>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const today = new Date();
-                    setDateRangePreset(today, today);
-                  }}
-                  className="text-xs"
-                >
-                  Today
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const yesterday = new Date();
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    setDateRangePreset(yesterday, yesterday);
-                  }}
-                  className="text-xs"
-                >
-                  Yesterday
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const now = new Date();
-                    const startOfWeek = new Date(now);
-                    startOfWeek.setDate(now.getDate() - now.getDay());
-                    const endOfWeek = new Date(now);
-                    setDateRangePreset(startOfWeek, endOfWeek);
-                  }}
-                  className="text-xs"
-                >
-                  This Week
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const now = new Date();
-                    const startOfLastWeek = new Date(now);
-                    startOfLastWeek.setDate(now.getDate() - now.getDay() - 7);
-                    const endOfLastWeek = new Date(now);
-                    endOfLastWeek.setDate(now.getDate() - now.getDay() - 1);
-                    setDateRangePreset(startOfLastWeek, endOfLastWeek);
-                  }}
-                  className="text-xs"
-                >
-                  Last Week
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const now = new Date();
-                    const startOfMonth = new Date(
-                      now.getFullYear(),
-                      now.getMonth(),
-                      1
-                    );
-                    const endOfMonth = new Date(now);
-                    setDateRangePreset(startOfMonth, endOfMonth);
-                  }}
-                  className="text-xs"
-                >
-                  This Month
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const now = new Date();
-                    const startOfLastMonth = new Date(
-                      now.getFullYear(),
-                      now.getMonth() - 1,
-                      1
-                    );
-                    const endOfLastMonth = new Date(
-                      now.getFullYear(),
-                      now.getMonth(),
-                      0
-                    );
-                    setDateRangePreset(startOfLastMonth, endOfLastMonth);
-                  }}
-                  className="text-xs"
-                >
-                  Last Month
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const now = new Date();
-                    const startOfYear = new Date(now.getFullYear(), 0, 1);
-                    const endOfYear = new Date(now);
-                    setDateRangePreset(startOfYear, endOfYear);
-                  }}
-                  className="text-xs"
-                >
-                  This Year
-                </Button>
+                <div className="flex sm:flex-col gap-2 overflow-auto w-full min-w-0">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const today = new Date();
+                      setDateRangePreset(today, today);
+                    }}
+                    className="text-xs"
+                  >
+                    Today
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const yesterday = new Date();
+                      yesterday.setDate(yesterday.getDate() - 1);
+                      setDateRangePreset(yesterday, yesterday);
+                    }}
+                    className="text-xs"
+                  >
+                    Yesterday
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const now = new Date();
+                      const startOfWeek = new Date(now);
+                      startOfWeek.setDate(now.getDate() - now.getDay());
+                      const endOfWeek = new Date(now);
+                      setDateRangePreset(startOfWeek, endOfWeek);
+                    }}
+                    className="text-xs"
+                  >
+                    This Week
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const now = new Date();
+                      const startOfLastWeek = new Date(now);
+                      startOfLastWeek.setDate(now.getDate() - now.getDay() - 7);
+                      const endOfLastWeek = new Date(now);
+                      endOfLastWeek.setDate(now.getDate() - now.getDay() - 1);
+                      setDateRangePreset(startOfLastWeek, endOfLastWeek);
+                    }}
+                    className="text-xs"
+                  >
+                    Last Week
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const now = new Date();
+                      const startOfMonth = new Date(
+                        now.getFullYear(),
+                        now.getMonth(),
+                        1
+                      );
+                      const endOfMonth = new Date(now);
+                      setDateRangePreset(startOfMonth, endOfMonth);
+                    }}
+                    className="text-xs"
+                  >
+                    This Month
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const now = new Date();
+                      const startOfLastMonth = new Date(
+                        now.getFullYear(),
+                        now.getMonth() - 1,
+                        1
+                      );
+                      const endOfLastMonth = new Date(
+                        now.getFullYear(),
+                        now.getMonth(),
+                        0
+                      );
+                      setDateRangePreset(startOfLastMonth, endOfLastMonth);
+                    }}
+                    className="text-xs"
+                  >
+                    Last Month
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const now = new Date();
+                      const startOfYear = new Date(now.getFullYear(), 0, 1);
+                      const endOfYear = new Date(now);
+                      setDateRangePreset(startOfYear, endOfYear);
+                    }}
+                    className="text-xs"
+                  >
+                    This Year
+                  </Button>
+                </div>
               </div>
 
               {/* Date inputs with custom calendar picker */}
