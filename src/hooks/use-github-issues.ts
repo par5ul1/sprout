@@ -28,7 +28,6 @@ export function useGitHubIssues(filters: SearchFilters) {
       try {
         const octokit = new Octokit();
 
-        // Build search query
         let query = 'is:issue is:open label:"good first issue"';
 
         if (filters.languages && filters.languages.length > 0) {
@@ -38,7 +37,6 @@ export function useGitHubIssues(filters: SearchFilters) {
           query += ` (${languageQuery})`;
         }
 
-        // Add date range filters
         if (filters.dateRange.from) {
           const fromDate = filters.dateRange.from.toISOString().split("T")[0];
           query += ` created:${fromDate}`;

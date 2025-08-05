@@ -1,128 +1,120 @@
 import { useQueryState } from "nuqs";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import type { SearchFilters } from "@/types/github";
 
+const DEFAULT_FILTERS: SearchFilters = {
+  languages: [],
+  dateRange: { from: null, to: null },
+  sortBy: "created",
+  sortOrder: "desc",
+  page: 1,
+  perPage: 30,
+};
+
+const KEYS = {
+  languages: "l",
+  dateRange: "d",
+  sortBy: "s",
+  sortOrder: "o",
+  page: "p",
+  perPage: "pp",
+};
+
+const serializeFilters = (filters: SearchFilters): string => {
+  const parts: string[] = [];
+
+  if (filters.languages.length > 0) {
+    parts.push(`${KEYS.languages}:${filters.languages.join(",")}`);
+  }
+
+  const fromDate = filters.dateRange.from?.toISOString().split("T")[0] || "";
+  const toDate = filters.dateRange.to?.toISOString().split("T")[0] || "";
+  if (fromDate || toDate) {
+    parts.push(`${KEYS.dateRange}:${fromDate},${toDate}`);
+  }
+
+  if (filters.sortBy !== "created") {
+    parts.push(`${KEYS.sortBy}:${filters.sortBy}`);
+  }
+
+  if (filters.sortOrder !== "desc") {
+    parts.push(`${KEYS.sortOrder}:${filters.sortOrder}`);
+  }
+
+  if (filters.page !== 1) {
+    parts.push(`${KEYS.page}:${filters.page}`);
+  }
+
+  if (filters.perPage !== 30) {
+    parts.push(`${KEYS.perPage}:${filters.perPage}`);
+  }
+
+  return parts.join("+");
+};
+
+const parseFilters = (value: string): SearchFilters => {
+  if (!value) return DEFAULT_FILTERS;
+
+  const filters = { ...DEFAULT_FILTERS };
+  const parts = value.split("+");
+
+  for (const part of parts) {
+    const [key, value] = part.split(":");
+    if (!value) continue;
+
+    switch (key) {
+      case KEYS.languages: {
+        filters.languages = value.split(",").filter(Boolean);
+        break;
+      }
+      case KEYS.dateRange: {
+        const [from, to] = value.split(",");
+        filters.dateRange.from = from ? new Date(from) : null;
+        filters.dateRange.to = to ? new Date(to) : null;
+        break;
+      }
+      case KEYS.sortBy: {
+        filters.sortBy = value as SearchFilters["sortBy"];
+        break;
+      }
+      case KEYS.sortOrder: {
+        filters.sortOrder = value as SearchFilters["sortOrder"];
+        break;
+      }
+      case KEYS.page: {
+        filters.page = parseInt(value, 10);
+        break;
+      }
+      case "pp": {
+        filters.perPage = parseInt(value, 10);
+        break;
+      }
+    }
+  }
+
+  return filters;
+};
+
 export function useSearchFilters() {
-  const [languages, setLanguages] = useQueryState<Array<string>>("languages", {
-    defaultValue: [],
-    parse: (value) => value.split(",").filter(Boolean),
-    serialize: (value) => value.join(","),
+  const [filters, setFilters] = useQueryState<SearchFilters>("filters", {
+    defaultValue: DEFAULT_FILTERS,
+    parse: parseFilters,
+    serialize: serializeFilters,
   });
-
-  const [fromDate, setFromDate] = useQueryState<Date | null>("from", {
-    defaultValue: null,
-    parse: (value) => (value ? new Date(value) : null),
-    serialize: (value) => (value ? value.toISOString().split("T")[0] : ""),
-  });
-
-  const [toDate, setToDate] = useQueryState<Date | null>("to", {
-    defaultValue: null,
-    parse: (value) => (value ? new Date(value) : null),
-    serialize: (value) => (value ? value.toISOString().split("T")[0] : ""),
-  });
-
-  const [sortBy, setSortBy] = useQueryState<
-    "created" | "updated" | "comments" | "reactions"
-  >("sortBy", {
-    defaultValue: "created",
-    parse: (value) => value as "created" | "updated" | "comments" | "reactions",
-    serialize: (value) => value,
-  });
-
-  const [sortOrder, setSortOrder] = useQueryState<"asc" | "desc">("sortOrder", {
-    defaultValue: "desc",
-    parse: (value) => value as "asc" | "desc",
-    serialize: (value) => value,
-  });
-
-  const [page, setPage] = useQueryState<number>("page", {
-    defaultValue: 1,
-    parse: (value) => parseInt(value, 10),
-    serialize: (value) => value.toString(),
-  });
-
-  const [perPage, setPerPage] = useQueryState<number>("perPage", {
-    defaultValue: 30,
-    parse: (value) => parseInt(value, 10),
-    serialize: (value) => value.toString(),
-  });
-
-  const filters: SearchFilters = useMemo(
-    () => ({
-      languages,
-      dateRange: {
-        from: fromDate,
-        to: toDate,
-      },
-      sortBy,
-      sortOrder,
-      page,
-      perPage,
-    }),
-    [languages, fromDate, toDate, sortBy, sortOrder, page, perPage]
-  );
 
   const updateFilters = useCallback(
     (newFilters: Partial<SearchFilters>) => {
-      if (newFilters.languages !== undefined) {
-        setLanguages(newFilters.languages);
-      }
-      if (newFilters.dateRange?.from !== undefined) {
-        setFromDate(
-          newFilters.dateRange.from ? newFilters.dateRange.from : null
-        );
-      }
-      if (newFilters.dateRange?.to !== undefined) {
-        setToDate(newFilters.dateRange.to ? newFilters.dateRange.to : null);
-      }
-      if (newFilters.sortBy !== undefined) {
-        setSortBy(newFilters.sortBy);
-      }
-      if (newFilters.sortOrder !== undefined) {
-        setSortOrder(newFilters.sortOrder);
-      }
-      if (newFilters.page !== undefined) {
-        setPage(newFilters.page);
-      }
-      if (newFilters.perPage !== undefined) {
-        setPerPage(newFilters.perPage);
-      }
+      setFilters((prev) => ({
+        ...prev,
+        ...newFilters,
+        dateRange: {
+          from: newFilters.dateRange?.from ?? prev.dateRange.from,
+          to: newFilters.dateRange?.to ?? prev.dateRange.to,
+        },
+      }));
     },
-    [
-      setLanguages,
-      setFromDate,
-      setToDate,
-      setSortBy,
-      setSortOrder,
-      setPage,
-      setPerPage,
-    ]
+    [setFilters]
   );
 
-  const setFilters = useCallback(
-    (newFilters: SearchFilters) => {
-      setLanguages(newFilters.languages);
-      setFromDate(newFilters.dateRange.from ? newFilters.dateRange.from : null);
-      setToDate(newFilters.dateRange.to ? newFilters.dateRange.to : null);
-      setSortBy(newFilters.sortBy || "created");
-      setSortOrder(newFilters.sortOrder || "desc");
-      setPage(newFilters.page || 1);
-      setPerPage(newFilters.perPage || 30);
-    },
-    [
-      setLanguages,
-      setFromDate,
-      setToDate,
-      setSortBy,
-      setSortOrder,
-      setPage,
-      setPerPage,
-    ]
-  );
-
-  return {
-    filters,
-    updateFilters,
-    setFilters,
-  };
+  return { filters, updateFilters, setFilters };
 }

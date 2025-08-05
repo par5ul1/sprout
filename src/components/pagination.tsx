@@ -1,19 +1,17 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, EllipsisIcon } from "lucide-react";
 import { Button } from "./ui/button";
-
-interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  isLoading?: boolean;
-}
 
 export function Pagination({
   currentPage,
   totalPages,
   onPageChange,
   isLoading = false,
-}: PaginationProps) {
+}: {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  isLoading?: boolean;
+}) {
   if (totalPages <= 1) {
     return null;
   }
@@ -23,7 +21,7 @@ export function Pagination({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const getVisiblePages = () => {
+  const getPageButtons = () => {
     const delta = 2;
     const range = [];
     const rangeWithDots = [];
@@ -37,7 +35,7 @@ export function Pagination({
     }
 
     if (currentPage - delta > 2) {
-      rangeWithDots.push(1, "...");
+      rangeWithDots.push(1, null);
     } else {
       rangeWithDots.push(1);
     }
@@ -45,15 +43,13 @@ export function Pagination({
     rangeWithDots.push(...range);
 
     if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push("...", totalPages);
+      rangeWithDots.push(null, totalPages);
     } else {
       rangeWithDots.push(totalPages);
     }
 
     return rangeWithDots;
   };
-
-  const visiblePages = getVisiblePages();
 
   return (
     <div className="flex items-center justify-center gap-2">
@@ -67,22 +63,17 @@ export function Pagination({
         <span className="sr-only">Previous page</span>
       </Button>
 
-      {visiblePages.map((page) => (
-        <div key={page === "..." ? `dots-${Math.random()}` : `page-${page}`}>
-          {page === "..." ? (
-            <span className="px-2 py-1 text-muted-foreground text-sm">...</span>
-          ) : (
-            <Button
-              variant={page === currentPage ? "default" : "outline"}
-              size="sm"
-              onClick={() => handlePageChange(page as number)}
-              disabled={isLoading}
-              className="min-w-[2.5rem]"
-            >
-              {page}
-            </Button>
-          )}
-        </div>
+      {getPageButtons().map((page, index) => (
+        <PageButton
+          key={`page-${page}-${
+            // biome-ignore lint/suspicious/noArrayIndexKey: does not reorder
+            index
+          }`}
+          page={page}
+          currentPage={currentPage}
+          isLoading={isLoading}
+          onPageChange={handlePageChange}
+        />
       ))}
 
       <Button
@@ -95,5 +86,36 @@ export function Pagination({
         <span className="sr-only">Next page</span>
       </Button>
     </div>
+  );
+}
+
+function PageButton({
+  page,
+  currentPage,
+  isLoading,
+  onPageChange,
+}: {
+  page: number | null;
+  currentPage: number;
+  isLoading: boolean;
+  onPageChange: (page: number) => void;
+}) {
+  if (page === null) {
+    return (
+      <div className="flex items-center justify-center">
+        <EllipsisIcon className="h-4 w-4 text-muted-foreground" />
+      </div>
+    );
+  }
+
+  return (
+    <Button
+      variant={page === currentPage ? "default" : "outline"}
+      size="sm"
+      onClick={() => onPageChange(page)}
+      disabled={isLoading}
+    >
+      {page}
+    </Button>
   );
 }
