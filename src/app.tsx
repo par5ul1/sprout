@@ -1,4 +1,4 @@
-import { FilterChips } from "./components/filter-chips";
+import { Filters } from "./components/filters";
 import { IssuesGrid } from "./components/issues-grid";
 import Logo from "./components/logo";
 import { Pagination } from "./components/pagination";
@@ -41,7 +41,7 @@ export function App() {
                 </span>
               )}
             </div>
-            <FilterChips filters={filters} updateFilters={updateFilters} />
+            <Filters filters={filters} updateFilters={updateFilters} />
           </div>
 
           {error && (
