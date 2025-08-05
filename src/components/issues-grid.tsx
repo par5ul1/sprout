@@ -1,12 +1,13 @@
 import type { GitHubIssue } from '@/types/github';
 import { IssueCard, IssueCardSkeleton } from './issue-card';
 
-interface IssuesGridProps {
+export function IssuesGrid({
+	issues,
+	isLoading,
+}: {
 	issues: GitHubIssue[];
 	isLoading: boolean;
-}
-
-export function IssuesGrid({ issues, isLoading }: IssuesGridProps) {
+}) {
 	if (!isLoading && issues.length === 0) {
 		return (
 			<div className="py-8 text-center">
