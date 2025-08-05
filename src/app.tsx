@@ -70,6 +70,23 @@ export function App() {
           )}
         </div>
       </main>
+
+      <hr />
+
+      <footer className="flex justify-center py-4">
+        <p className="text-sm text-muted-foreground">
+          Developed with ❤️ by yours truly,{" "}
+          <a
+            className="text-accent-foreground underline decoration-dotted"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/par5ul1"
+          >
+            Parsuli
+          </a>
+          .
+        </p>
+      </footer>
     </div>
   );
 }
