@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "https://par5ul1.github.io/sprout/",
+  base: "/sprout",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
